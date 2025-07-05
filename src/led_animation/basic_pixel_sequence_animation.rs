@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::led_animation::ws2812_led_animation::{Direction, RgbLedAnimation};
+use crate::{Direction, RgbLedAnimation};
 use smart_leds::RGB8;
 
 /// Struct to handle moving a basic pixel sequence on many LEDs.

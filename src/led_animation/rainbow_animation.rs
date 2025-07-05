@@ -1,4 +1,4 @@
-use crate::led_animation::ws2812_led_animation::{PixelColor, RgbLedAnimation};
+use crate::{PixelColor, RgbLedAnimation};
 use smart_leds::RGB8;
 
 /// Struct to handle performing a simple rainbow animation on many LEDs.
