@@ -19,7 +19,6 @@ impl AsRef<Vec<RGB8>> for Rgb8BasicPixelSequenceAnimation {
 
 impl Rgb8BasicPixelSequenceAnimation {
     /// Creates a new animation, with a basic pixel sequence.
-    #[allow(dead_code)]
     pub fn new(num_pixels: usize, pixel_sequence: Vec<RGB8>, direction: Direction) -> Self {
         Self {
             repeated_color_sequence: VecDeque::from(pixel_sequence.clone()),
@@ -60,7 +59,6 @@ impl RgbLedAnimation for Rgb8BasicPixelSequenceAnimation {
 
 impl Rgb8BasicPixelSequenceAnimation {
     /// Sets the direction of the animation.
-    #[allow(dead_code)]
     pub fn set_direction(&mut self, direction: Direction) {
         self.direction = direction;
     }

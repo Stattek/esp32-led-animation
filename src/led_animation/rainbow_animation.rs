@@ -15,16 +15,11 @@ impl AsRef<Vec<RGB8>> for Rgb8RainbowAnimation {
 
 impl Rgb8RainbowAnimation {
     /// Creates a new animation, with all lights off at the start.
-    #[allow(dead_code)]
     pub fn new(num_pixels: usize) -> Self {
         // let's start off with all off
         Self {
-            pixels: std::iter::repeat(RGB8::new(0, 0, 0))
-                .take(num_pixels)
-                .collect(),
-            cur_color_increment: std::iter::repeat(PixelColor::Red)
-                .take(num_pixels)
-                .collect(),
+            pixels: std::iter::repeat_n(RGB8::new(0, 0, 0), num_pixels).collect(),
+            cur_color_increment: std::iter::repeat_n(PixelColor::Red, num_pixels).collect(),
         }
     }
 }
