@@ -31,3 +31,16 @@ pub const SUMMER_SEQUENCE: [RGB8; 10] = [
     RGB8::new(255, 255, 0),
     RGB8::new(255, 255, 0),
 ];
+
+pub const PURPLES_SEQUENCE: [RGB8; 10] = [
+    RGB8::new(112, 0, 255),
+    RGB8::new(112, 0, 255),
+    RGB8::new(112, 0, 255),
+    RGB8::new(112, 0, 255),
+    RGB8::new(112, 0, 255),
+    RGB8::new(132, 80, 255),
+    RGB8::new(132, 80, 255),
+    RGB8::new(132, 80, 255),
+    RGB8::new(132, 80, 255),
+    RGB8::new(132, 80, 255),
+];
