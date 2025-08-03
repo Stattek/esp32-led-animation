@@ -1,5 +1,5 @@
 [package]
-name = "esp32_led_animations"
+name = "esp32-led-animation"
 version = "0.1.0"
 edition = "2024"
 
