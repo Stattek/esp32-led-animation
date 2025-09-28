@@ -44,3 +44,17 @@ pub const PURPLES_SEQUENCE: [RGB8; 10] = [
     RGB8::new(132, 80, 255),
     RGB8::new(132, 80, 255),
 ];
+
+pub const OFF_WHITE_SEQUENCE: [RGB8; 11] = [
+    RGB8::new(255, 255, 100),
+    RGB8::new(255, 255, 90),
+    RGB8::new(255, 255, 80),
+    RGB8::new(255, 255, 70),
+    RGB8::new(255, 255, 60),
+    RGB8::new(255, 255, 50),
+    RGB8::new(255, 255, 40),
+    RGB8::new(255, 255, 30),
+    RGB8::new(255, 255, 20),
+    RGB8::new(255, 255, 10),
+    RGB8::new(255, 255, 0),
+];
