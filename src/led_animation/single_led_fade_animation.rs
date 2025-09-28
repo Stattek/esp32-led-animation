@@ -2,7 +2,10 @@ use std::u8;
 
 use smart_leds::RGB8;
 
-use crate::RgbLedAnimation;
+use crate::{
+    RgbLedAnimation,
+    led_helpers::led_fade::{fade_in_led, fade_out_led},
+};
 
 /// Struct for setting a single color on an LED strip. All other LEDs will be shut off when one is
 /// turned on.
@@ -50,27 +53,11 @@ impl RgbLedAnimation for Rgb8SingleLedFadeAnimation {
     fn next_frame(&mut self) {
         // fade in only the LED that we have set currently
         if let Some(current_idx_on) = self.current_idx_on {
-            // check if we are at the values that we want yet. We are checking them all because
-            // floating point arithmetic can be funky and we may be very close but not quite where
-            // we wish to be.
-            let current_pixel = &mut self.pixels[current_idx_on];
-            if self.pixel_color.r != current_pixel.r
-                || self.pixel_color.g != current_pixel.g
-                || self.pixel_color.b != current_pixel.b
-            {
-                // we need to keep increasing our value
-
-                // calculate the values to increase by, the maximum we want to increase by is the
-                // difference between the maximum u8 value and the current value
-                let r_inc = self.fade_step_value.clamp(0, u8::MAX - current_pixel.r);
-                let g_inc = self.fade_step_value.clamp(0, u8::MAX - current_pixel.g);
-                let b_inc = self.fade_step_value.clamp(0, u8::MAX - current_pixel.b);
-
-                // set the values now
-                current_pixel.r += r_inc;
-                current_pixel.g += g_inc;
-                current_pixel.b += b_inc;
-            }
+            fade_in_led(
+                &mut self.pixels[current_idx_on],
+                &self.pixel_color,
+                self.fade_step_value,
+            );
         }
 
         // fade out all other LEDs that are off
@@ -87,22 +74,7 @@ impl RgbLedAnimation for Rgb8SingleLedFadeAnimation {
             };
 
             if do_fade {
-                // check that all values are at 0
-                let current_pixel = &mut self.pixels[i];
-                if current_pixel.r != 0 || current_pixel.g != 0 || current_pixel.b != 0 {
-                    // something isn't at 0, perform fade!
-
-                    // calculate the values to decrease by, the max value we want to decrease by is
-                    // what the current pixel value is
-                    let r_dec = self.fade_step_value.clamp(0, current_pixel.r);
-                    let g_dec = self.fade_step_value.clamp(0, current_pixel.g);
-                    let b_dec = self.fade_step_value.clamp(0, current_pixel.b);
-
-                    // set the values now
-                    current_pixel.r -= r_dec;
-                    current_pixel.g -= g_dec;
-                    current_pixel.b -= b_dec;
-                }
+                fade_out_led(&mut self.pixels[i], self.fade_step_value);
             }
         }
     }

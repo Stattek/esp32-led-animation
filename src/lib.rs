@@ -1,6 +1,7 @@
 #![allow(unexpected_cfgs)] // TODO: add tests so this can be removed
 
 pub mod led_animation;
+pub mod led_helpers;
 
 /// Trait for structs that can handle performing an RGB LED animation.
 pub trait RgbLedAnimation {
