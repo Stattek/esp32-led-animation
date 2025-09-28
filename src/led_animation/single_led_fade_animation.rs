@@ -1,21 +1,23 @@
-use std::u8;
-
 use smart_leds::RGB8;
 
 use crate::{
     RgbLedAnimation,
-    led_helpers::led_fade::{fade_in_led, fade_out_led},
+    led_helpers::led_fade::{fade_in_led, fade_out_led, is_led_faded_out},
 };
 
 /// Struct for setting a single color on an LED strip. All other LEDs will be shut off when one is
 /// turned on.
 #[derive(Debug)]
 pub struct Rgb8SingleLedFadeAnimation {
+    /// The pixel color that we desire for the LED turning on.
     pixel_color: RGB8,
     pixels: Vec<RGB8>,
     num_pixels: usize,
     current_idx_on: Option<usize>,
     fade_step_value: u8,
+    /// Whether the LED turning on should flicker
+    flicker: bool,
+    flickered_last_frame: bool,
 }
 
 impl AsRef<Vec<RGB8>> for Rgb8SingleLedFadeAnimation {
@@ -23,6 +25,10 @@ impl AsRef<Vec<RGB8>> for Rgb8SingleLedFadeAnimation {
         &self.pixels
     }
 }
+
+const RAND_FLICKER_MOD: u32 = 100;
+const RAND_CHANCE_TO_FLICKER: u32 = 33; // 1/3 times it checks, it will flicker
+const RAND_CHANCE_STOP_FLICKER: u32 = 33;
 
 impl Rgb8SingleLedFadeAnimation {
     /// Creates a new `Rgb8SingleLedAnimation`, for setting a single LED at a time. The LED will use
@@ -43,6 +49,8 @@ impl Rgb8SingleLedFadeAnimation {
             current_idx_on: None, // since none of the floor lights are on
             // 1.0 is 100% fade on the next frame
             fade_step_value,
+            flicker: false,
+            flickered_last_frame: false,
         }
     }
 }
@@ -53,11 +61,38 @@ impl RgbLedAnimation for Rgb8SingleLedFadeAnimation {
     fn next_frame(&mut self) {
         // fade in only the LED that we have set currently
         if let Some(current_idx_on) = self.current_idx_on {
-            fade_in_led(
-                &mut self.pixels[current_idx_on],
-                &self.pixel_color,
-                self.fade_step_value,
-            );
+            // flicker only while in the middle of turning on
+            if !is_led_faded_out(&self.pixels[current_idx_on])
+                && self.flicker
+                && !self.flickered_last_frame
+            {
+                // if we have flicker on, randomly fade back out instead
+                let flicker_roll = rand::random::<u32>() % RAND_FLICKER_MOD;
+                if flicker_roll < RAND_CHANCE_TO_FLICKER {
+                    let (mut flicker_fade_step, fade_overflowed) = self
+                        .fade_step_value
+                        .overflowing_add(self.fade_step_value / 2);
+                    if fade_overflowed {
+                        flicker_fade_step = u8::MAX;
+                    }
+
+                    fade_out_led(&mut self.pixels[current_idx_on], flicker_fade_step);
+                    self.flickered_last_frame = true;
+                }
+
+                // roll to stop flickering
+                let stop_flicker_roll = rand::random::<u32>() % RAND_FLICKER_MOD;
+                if stop_flicker_roll < RAND_CHANCE_STOP_FLICKER {
+                    self.flicker = false;
+                }
+            } else {
+                fade_in_led(
+                    &mut self.pixels[current_idx_on],
+                    &self.pixel_color,
+                    self.fade_step_value,
+                );
+                self.flickered_last_frame = false;
+            }
         }
 
         // fade out all other LEDs that are off
@@ -84,7 +119,9 @@ impl Rgb8SingleLedFadeAnimation {
     /// Sets the specified pixel on based on the input index. All other LEDs will be set to turn off.
     ///
     /// * `idx`: The LED index to light up.
-    pub fn set_led_on(&mut self, idx: usize) -> Result<(), ()> {
+    /// * `flicker`: Whether the LED that's turning on should flicker.
+    pub fn set_led_on(&mut self, idx: usize, flicker: bool) -> Result<(), ()> {
+        self.flicker = flicker;
         if idx >= self.num_pixels {
             // the specified index goes beyond the number of pixels that we have
             Err(())

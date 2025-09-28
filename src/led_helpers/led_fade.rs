@@ -24,6 +24,22 @@ pub fn fade_in_led(pixel: &mut RGB8, fade_to_color: &RGB8, fade_step_value: u8) 
     }
 }
 
+/// Checks that an LED is faded in already.
+///
+/// * `pixel`: The pixel (LED) to fade in.
+/// * `fade_to_color`: The color that we wish to fade into.
+pub fn is_led_faded_in(pixel: &RGB8, fade_to_color: &RGB8) -> bool {
+    pixel.r == fade_to_color.r && pixel.g == fade_to_color.g && pixel.b == fade_to_color.b
+}
+
+/// Checks that an LED is faded out already.
+///
+/// * `pixel`: The pixel (LED) to fade in.
+/// * `fade_to_color`: The color that we wish to fade into.
+pub fn is_led_faded_out(pixel: &RGB8) -> bool {
+    pixel.r == 0 && pixel.g == 0 && pixel.b == 0
+}
+
 /// Fades an LED out on this frame toward being turned off.
 ///
 /// * `pixel`: The pixel (LED) to fade out.
@@ -31,7 +47,7 @@ pub fn fade_in_led(pixel: &mut RGB8, fade_to_color: &RGB8, fade_step_value: u8) 
 /// 0 for each color.
 pub fn fade_out_led(pixel: &mut RGB8, fade_step_value: u8) {
     // check that all values are at 0
-    if pixel.r != 0 || pixel.g != 0 || pixel.b != 0 {
+    if !is_led_faded_out(&pixel) {
         // something isn't at 0, perform fade!
 
         // calculate the values to decrease by, the max value we want to decrease by is
