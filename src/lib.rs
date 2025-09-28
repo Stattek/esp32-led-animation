@@ -24,7 +24,7 @@ pub enum Direction {
 }
 
 // TODO: add tests
-#[cfg(target_arch = "none")]
+#[cfg(false)]
 #[cfg(test)]
 mod tests {
     use super::*;

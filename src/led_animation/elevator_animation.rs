@@ -6,12 +6,15 @@ use crate::{
 };
 use smart_leds::RGB8;
 
+/// Represents the direction the elevator is moving in.
 #[derive(Clone, Copy)]
 pub enum ElevatorDirection {
     Up,
     Down,
 }
 
+/// Keeps track of where the elevator is located when the animation starts, in resepect to the
+/// `num_pixels` used to represent the elevator.
 pub enum ElevatorStartingPosition {
     Above,
     Below,
