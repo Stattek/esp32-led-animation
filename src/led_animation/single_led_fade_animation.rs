@@ -105,4 +105,8 @@ impl Rgb8SingleLedFadeAnimation {
             self.pixels[idx] = self.pixel_color.clone();
         }
     }
+
+    // TODO: could be worth adding the ability to change the color of the LED.
+    // TODO: another good one would be for setting the fade step value (maybe we want to fade
+    // faster?)
 }
