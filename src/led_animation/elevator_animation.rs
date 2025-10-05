@@ -7,7 +7,7 @@ use crate::{
 use smart_leds::RGB8;
 
 /// Represents the direction the elevator is moving in.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub enum ElevatorDirection {
     Up,
     Down,
@@ -83,6 +83,22 @@ impl Rgb8ElevatorAnimation {
             fade_step_value,
             elevator_speed,
         }
+    }
+
+    pub fn tail_idx(&self) -> isize {
+        self.tail_idx
+    }
+
+    pub fn head_idx(&self) -> isize {
+        self.head_idx
+    }
+
+    pub fn elevator_length(&self) -> usize {
+        self.elevator_length
+    }
+
+    pub fn elevator_direction(&self) -> ElevatorDirection {
+        self.elevator_direction
     }
 }
 
