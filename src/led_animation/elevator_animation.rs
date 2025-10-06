@@ -1,7 +1,7 @@
 use std::isize;
 
 use crate::{
-    Direction, PixelColor, RgbLedAnimation,
+    RgbLedAnimation,
     led_helpers::led_fade::{fade_in_led, fade_out_led},
 };
 use smart_leds::RGB8;
