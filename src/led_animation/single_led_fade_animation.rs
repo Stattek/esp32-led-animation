@@ -14,7 +14,10 @@ pub struct Rgb8SingleLedFadeAnimation {
     pixels: Vec<RGB8>,
     num_pixels: usize,
     current_idx_on: Option<usize>,
+    /// Amount to fade in and out.
     fade_step_value: u8,
+    /// Amount to over fade in (for extra flickering)
+    over_fade_value: u8,
     /// Whether the LED turning on should flicker
     flicker: bool,
     flickered_last_frame: bool,
@@ -36,7 +39,12 @@ impl Rgb8SingleLedFadeAnimation {
     ///
     /// Useful for situations where an LED specifies a single value, such as an elevator floor
     /// number LED (which is what this was created for).
-    pub fn new(num_pixels: usize, pixel_color: RGB8, fade_step_value: u8) -> Self {
+    pub fn new(
+        num_pixels: usize,
+        pixel_color: RGB8,
+        fade_step_value: u8,
+        over_fade_value: u8,
+    ) -> Self {
         Self {
             pixel_color,
             // the pixels should default to being all off
@@ -49,6 +57,7 @@ impl Rgb8SingleLedFadeAnimation {
             current_idx_on: None, // since none of the floor lights are on
             // 1.0 is 100% fade on the next frame
             fade_step_value,
+            over_fade_value,
             flicker: false,
             flickered_last_frame: false,
         }
@@ -90,6 +99,7 @@ impl RgbLedAnimation for Rgb8SingleLedFadeAnimation {
                     &mut self.pixels[current_idx_on],
                     &self.pixel_color,
                     self.fade_step_value,
+                    self.over_fade_value,
                 );
                 self.flickered_last_frame = false;
             }

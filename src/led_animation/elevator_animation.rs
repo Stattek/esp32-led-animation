@@ -35,6 +35,8 @@ pub struct Rgb8ElevatorAnimation {
     elevator_stopped: bool,
     /// Amount to fade in and out as the elevator moves
     fade_step_value: u8,
+    /// Amount to over fade in
+    over_fade_value: u8,
     elevator_speed: usize,
 }
 
@@ -51,6 +53,7 @@ impl Rgb8ElevatorAnimation {
         num_pixels: usize,
         elevator_length: usize,
         fade_step_value: u8,
+        over_fade_value: u8,
         elevator_stopped: bool,
         elevator_direction: ElevatorDirection,
         elevator_speed: usize,
@@ -81,6 +84,7 @@ impl Rgb8ElevatorAnimation {
             elevator_stopped,
             elevator_direction,
             fade_step_value,
+            over_fade_value,
             elevator_speed,
         }
     }
@@ -128,6 +132,7 @@ impl RgbLedAnimation for Rgb8ElevatorAnimation {
                     &mut self.pixels[i],
                     &self.elevator_color,
                     self.fade_step_value,
+                    self.over_fade_value,
                 );
             } else {
                 // fade out rest
