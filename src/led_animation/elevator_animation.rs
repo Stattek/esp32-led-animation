@@ -85,6 +85,10 @@ impl Rgb8ElevatorAnimation {
         }
     }
 
+    pub fn set_elevator_stopped(&mut self, elevator_stopped: bool) {
+        self.elevator_stopped = elevator_stopped;
+    }
+
     pub fn tail_idx(&self) -> isize {
         self.tail_idx
     }

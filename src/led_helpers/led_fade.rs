@@ -1,5 +1,27 @@
 use smart_leds::RGB8;
 
+/// Fades toward a particular color value.
+///
+/// * `color`: The current color value.
+/// * `fade_step_value`: The amount to fade toward per frame.
+fn handle_fade(cur_color: &mut u8, desired_color: u8, fade_step_value: u8) {
+    if *cur_color < desired_color {
+        // calculate the value to increase by, the maximum we want to increase by is the
+        // difference between the maximum u8 value and the current value
+        let increase_by = fade_step_value.clamp(0, u8::MAX - *cur_color);
+
+        // set the values now
+        *cur_color += increase_by;
+    } else if *cur_color > desired_color {
+        // calculate value to decrease by. The maximum we want to decrease by is the amount that we
+        // have now.
+        let decrease_by = fade_step_value.clamp(0, *cur_color);
+
+        // set the value
+        *cur_color -= decrease_by;
+    }
+}
+
 /// Fades an LED in on this frame.
 ///
 /// * `pixel`: The pixel (LED) to fade in.
@@ -7,21 +29,10 @@ use smart_leds::RGB8;
 /// * `fade_step_value`: The amount to fade in per frame. This function will not allow going over
 /// the desired value.
 pub fn fade_in_led(pixel: &mut RGB8, fade_to_color: &RGB8, fade_step_value: u8) {
-    // check if we are at all the values that we want
-    if pixel.r != fade_to_color.r || pixel.g != fade_to_color.g || pixel.b != fade_to_color.b {
-        // we need to keep increasing our value
-
-        // calculate the values to increase by, the maximum we want to increase by is the
-        // difference between the maximum u8 value and the current value
-        let r_inc = fade_step_value.clamp(0, u8::MAX - pixel.r);
-        let g_inc = fade_step_value.clamp(0, u8::MAX - pixel.g);
-        let b_inc = fade_step_value.clamp(0, u8::MAX - pixel.b);
-
-        // set the values now
-        pixel.r += r_inc;
-        pixel.g += g_inc;
-        pixel.b += b_inc;
-    }
+    // check if we are at all the values that we want and increase them
+    handle_fade(&mut pixel.r, fade_to_color.r, fade_step_value);
+    handle_fade(&mut pixel.g, fade_to_color.g, fade_step_value);
+    handle_fade(&mut pixel.b, fade_to_color.b, fade_step_value);
 }
 
 /// Checks that an LED is faded in already.
