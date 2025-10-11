@@ -156,4 +156,9 @@ impl Rgb8SingleLedFadeAnimation {
     // TODO: could be worth adding the ability to change the color of the LED.
     // TODO: another good one would be for setting the fade step value (maybe we want to fade
     // faster?)
+
+    /// Turns the current LED that is on, off.
+    pub fn turn_led_off(&mut self) {
+        self.current_idx_on = None;
+    }
 }
